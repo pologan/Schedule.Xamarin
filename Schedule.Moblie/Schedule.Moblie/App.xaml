@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Schedule.Moblie.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="clrBackground">#0b0f0d</Color>
+            <Color x:Key="clrPrimary">#623CEA</Color>
+            <Color x:Key="clrSecondary">#E00000</Color>
+            <Color x:Key="clrAccent">#50FFB1</Color>
+
+            <Style TargetType="NavigationPage">
+                <Setter Property="BarBackgroundColor" Value="{StaticResource clrPrimary}" />
+                <Setter Property="Background" Value="{StaticResource clrPrimary}" />
+            </Style>
+
+            <Style TargetType="Button" x:Key="btnWeekday">
+                <Setter Property="TextColor" Value="White" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+                <Setter Property="BorderWidth" Value="0" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Margin" Value="0" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

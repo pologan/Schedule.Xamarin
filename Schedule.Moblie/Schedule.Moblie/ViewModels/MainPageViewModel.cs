@@ -1,5 +1,6 @@
 ﻿using Schedule.Moblie.Models.Entities;
 using Schedule.Moblie.Models.Enums;
+using Schedule.Moblie.SaveStrategy;
 using Schedule.Moblie.Services;
 using Schedule.Moblie.ViewModels.Base;
 using Schedule.Moblie.Views.Pages;
@@ -18,6 +19,7 @@ namespace Schedule.Moblie.ViewModels
         #region Fields
         private IScheduleService _service;
         private INavigation _navigation;
+        private ISaveToFileStrategy _saveStrategy;
         #endregion
 
         #region Propeties
@@ -30,8 +32,10 @@ namespace Schedule.Moblie.ViewModels
         #region Commands
         public Command OnAddCommand { get; set; }
         public Command<Button> OnWeekdayClickedCommand { get; set; }
+        public Command OnRefreshCommand { get; set; }
         public Command<Event> DeleteItemTapped { get; }
         public Command<Event> EditItemTapped { get; }
+        public Command SaveToFileCommand { get; set; }
         #endregion
 
         #region MainPageViewModel()
@@ -44,9 +48,27 @@ namespace Schedule.Moblie.ViewModels
             OnWeekdayClickedCommand = new Command<Button>(OnWeekdayClicked);
             DeleteItemTapped = new Command<Event>(OnDeleteItemClicked);
             EditItemTapped = new Command<Event>(OnEditItemClicked);
+            OnRefreshCommand = new Command(async () => await ExecuteLoadEventsCommand());
+            SaveToFileCommand = new Command(SaveToFile);
 
             ShowedEvents = new ObservableCollection<Event>();
             AllEvents = new List<Event>();
+        }
+
+        private async void SaveToFile(object obj)
+        {
+            bool xmlSelected = await App.Current.MainPage.DisplayAlert("Saving to file", "Select type", "Xml", "Json");
+
+            if(xmlSelected)
+            {
+                _saveStrategy = new SaveToXMLStrategy();
+                _saveStrategy.Save(AllEvents);
+            }
+            else
+            {
+                _saveStrategy = new SaveToJsonStrategy();
+                _saveStrategy.Save(AllEvents);
+            }
         }
 
         public void OnWeekdayClicked(Button button)
@@ -64,32 +86,32 @@ namespace Schedule.Moblie.ViewModels
                         break;
                     case "Tue":
                         Title = "Tuesday";
-                        eventsToShow = AllEvents.Where(e => e.Weekday == (int)WeekdayEnum.Monday).ToList();
+                        eventsToShow = AllEvents.Where(e => e.Weekday == (int)WeekdayEnum.Tuesday).ToList();
                         ShowedEvents = new ObservableCollection<Event>(eventsToShow);
                         break;
                     case "Wed":
                         Title = "Wednesday";
-                        eventsToShow = AllEvents.Where(e => e.Weekday == (int)WeekdayEnum.Monday).ToList();
+                        eventsToShow = AllEvents.Where(e => e.Weekday == (int)WeekdayEnum.Wednesday).ToList();
                         ShowedEvents = new ObservableCollection<Event>(eventsToShow);
                         break;
                     case "Thu":
                         Title = "Thursday";
-                        eventsToShow = AllEvents.Where(e => e.Weekday == (int)WeekdayEnum.Monday).ToList();
+                        eventsToShow = AllEvents.Where(e => e.Weekday == (int)WeekdayEnum.Thursday).ToList();
                         ShowedEvents = new ObservableCollection<Event>(eventsToShow);
                         break;
                     case "Fri":
                         Title = "Friday";
-                        eventsToShow = AllEvents.Where(e => e.Weekday == (int)WeekdayEnum.Monday).ToList();
+                        eventsToShow = AllEvents.Where(e => e.Weekday == (int)WeekdayEnum.Friday).ToList();
                         ShowedEvents = new ObservableCollection<Event>(eventsToShow);
                         break;
                     case "Sat":
                         Title = "Saturday";
-                        eventsToShow = AllEvents.Where(e => e.Weekday == (int)WeekdayEnum.Monday).ToList();
+                        eventsToShow = AllEvents.Where(e => e.Weekday == (int)WeekdayEnum.Saturday).ToList();
                         ShowedEvents = new ObservableCollection<Event>(eventsToShow);
                         break;
                     case "Sun":
                         Title = "Sunday";
-                        eventsToShow = AllEvents.Where(e => e.Weekday == (int)WeekdayEnum.Monday).ToList();
+                        eventsToShow = AllEvents.Where(e => e.Weekday == (int)WeekdayEnum.Sunday).ToList();
                         ShowedEvents = new ObservableCollection<Event>(eventsToShow);
                         break;
                 }
@@ -100,8 +122,6 @@ namespace Schedule.Moblie.ViewModels
 
         public async void OnAppearing()
         {
-            // AllEvents = new List<Event>(await _service.GetEventList());
-
             if (string.IsNullOrEmpty(Title))
             {
                 Title = "Monday";
@@ -112,6 +132,7 @@ namespace Schedule.Moblie.ViewModels
                     ShowedEvents = new ObservableCollection<Event>(eventsToShow);
                 }
             }
+            await ExecuteLoadEventsCommand();
         }
         #endregion
 
@@ -132,7 +153,7 @@ namespace Schedule.Moblie.ViewModels
 
                 if (deleted)
                 {
-                    await ExecuteLoadProjectsCommand();
+                    await ExecuteLoadEventsCommand();
                 }
             }
         }
@@ -141,13 +162,33 @@ namespace Schedule.Moblie.ViewModels
         {
             if (obj == null)
                 return;
+            
+            bool copy = await App.Current.MainPage.DisplayAlert("Edit item", "Copy or edit?", "Copy", "Edit");
 
-            await _navigation.PushAsync(new EditEventPage());
+            if (copy)
+            {
+                var evt = obj.DeepCopy();
+                await _service.AddEvent(evt);
+
+                await ExecuteLoadEventsCommand();
+            }
+            else
+            {
+                await _navigation.PushAsync(new EditEventPage(obj));
+            }
         }
 
-        private Task ExecuteLoadProjectsCommand()
+        private async Task ExecuteLoadEventsCommand()
         {
-            throw new NotImplementedException();
+            IsBusy = true;
+
+            var list = await _service.GetEventList();
+            AllEvents = new List<Event>(list);
+            Title = "Monday";
+            var eventsToShow = AllEvents.Where(e => e.Weekday == (int)WeekdayEnum.Monday).ToList();
+            ShowedEvents = new ObservableCollection<Event>(eventsToShow);
+
+            IsBusy = false;
         }
     }
 }

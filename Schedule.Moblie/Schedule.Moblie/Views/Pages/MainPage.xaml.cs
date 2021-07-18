@@ -26,6 +26,11 @@ namespace Schedule.Moblie
         {
             base.OnAppearing();
 
+            if (LastClickedButton != null)
+            {
+                LastClickedButton.TextColor = Color.White;
+            }
+
             LastClickedButton = monButton;
             monButton.TextColor = (Color)App.Current.Resources["clrAccent"];
 

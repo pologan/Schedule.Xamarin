@@ -15,6 +15,7 @@ namespace Schedule.Moblie.ViewModels
         #region Fields
         private readonly IScheduleService _service;
         private EventBuilder _builder { get; set; }
+        private INavigation _nav;
         #endregion
 
         #region Propeties
@@ -43,8 +44,8 @@ namespace Schedule.Moblie.ViewModels
         public EditEventViewModel(Event item, INavigation navigation)
         {
             _service = DependencyService.Get<IScheduleService>();
-
             _builder = new EventBuilder();
+            _nav = navigation;
 
             AddItemCommand = new Command(AddItem);
             OnAdvancedClickedCommand = new Command(OnAdvancedClicked);
@@ -54,6 +55,7 @@ namespace Schedule.Moblie.ViewModels
             BackCommand = new Command(Back);
 
             Item = item;
+            Weekdays = new ObservableCollection<KeyValuePair<int, string>>();
 
             StartTime = item.StartTime;
             EndTime = item.EndTime;
@@ -63,13 +65,13 @@ namespace Schedule.Moblie.ViewModels
             Note = item.Note;
         }
 
-       
-
         public EditEventViewModel(INavigation navigation)
         {
             _service = DependencyService.Get<IScheduleService>();
-
             _builder = new EventBuilder();
+            _nav = navigation;
+
+            Weekdays = new ObservableCollection<KeyValuePair<int, string>>();
 
             AddItemCommand = new Command(AddItem);
             OnAdvancedClickedCommand = new Command(OnAdvancedClicked);
@@ -115,7 +117,7 @@ namespace Schedule.Moblie.ViewModels
         {
             _builder.BuildBase(Name, (DayOfWeek)SelectedWeekday.Key, StartTime, EndTime);
             Item = _builder.GetEvent();
-            if (Item == null)
+            if (Item.Id == Guid.Empty)
             {
                 await _service.AddEvent(Item);
             }
@@ -123,11 +125,23 @@ namespace Schedule.Moblie.ViewModels
             {
                 await _service.UpdateEvent(Item);
             }
+
+            await _nav.PopAsync(true);
         }
 
         public void OnAppearing()
         {
             IsBaseVisible = true;
+            IsNotesVisible = false;
+            IsAdditionalVisible = false;
+
+            Weekdays.Clear();
+            var list = new List<KeyValuePair<int, string>>();
+            foreach (var prior in Enum.GetValues(typeof(DayOfWeek)))
+            {
+                list.Add(new KeyValuePair<int, string>((int)prior, prior.ToString()));
+            }
+            Weekdays = new ObservableCollection<KeyValuePair<int, string>>(list);
         }
     }
 }

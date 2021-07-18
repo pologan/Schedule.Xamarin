@@ -22,7 +22,7 @@ namespace Schedule.Moblie.Services
             try
             {
                 await Init();
-                await _db.InsertAsync(e);
+                var i = await _db.InsertAsync(e);
 
                 return true;
             }
@@ -57,7 +57,7 @@ namespace Schedule.Moblie.Services
             try
             {
                 await Init();
-                var list = await _db.Table<Event>().OrderBy(p => p.StartTime).ToListAsync();
+                var list = await _db.Table<Event>().OrderBy(p => p.StartTime).ThenBy(p => p.EndTime).ToListAsync();
 
                 return list;
             }
@@ -72,7 +72,9 @@ namespace Schedule.Moblie.Services
         {
            _db = DbSingleton.GetInstance();
 
-            await _db.CreateTableAsync<Event>();
+            var result = await _db.CreateTableAsync<Event>();
+
+            var i = 12;
         }
 
         public async Task<bool> RemoveEvent(Guid id)

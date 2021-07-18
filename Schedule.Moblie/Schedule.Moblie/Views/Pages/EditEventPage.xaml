@@ -8,35 +8,37 @@
     <ContentPage.Content>
         <StackLayout BackgroundColor="{StaticResource clrBackground}"
                      Padding="20"
-                     IsVisible="{Binding IsBaseVisible}"
                      VerticalOptions="FillAndExpand"
                      HorizontalOptions="FillAndExpand">
+            <StackLayout BackgroundColor="{StaticResource clrBackground}" VerticalOptions="FillAndExpand" IsVisible="{Binding IsBaseVisible}">
             <Label Margin="0,5,0,0" Text="Name:"  TextColor="Wheat"/>
-            <Frame Margin="0" Padding="0">
-            <Entry
+                <Frame Margin="0" Padding="0">
+                    <Entry
                 BackgroundColor="White"
                 PlaceholderColor="Gray"
-                TextColor="White"
+                TextColor="Black"
                 Placeholder="Enter..."
                 Text="{Binding Name, Mode=TwoWay}" />
-            </Frame>
-            <Label Margin="0,5,0,0" Text="Weekday:"  TextColor="Wheat"/>
-            <Picker Title="Choose" SelectedItem="{Binding SelectedWeekday}" BackgroundColor="White" ItemsSource="{Binding Weekdays}" />
-            <Label Margin="0,5,0,0" Text="Start time:"  TextColor="Wheat"/>
-            <TimePicker BackgroundColor="White"  Time="{Binding StartTime}" />
-            <Label Margin="0,5,0,0" Text="End time:"  TextColor="Wheat"/>
-            <TimePicker BackgroundColor="White"  Time="{Binding EndTime}" />
-            <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
-                <Button Command="{Binding OnAdvancedClickedCommand}" BackgroundColor="{StaticResource clrPrimary}" Text="Advanced" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand"/>
-                <Button Command="{Binding AddItemCommand}" BackgroundColor="{StaticResource clrAccent}" Text="Add" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand"/>
+                </Frame>
+                <Label Margin="0,5,0,0" Text="Weekday:"  TextColor="Wheat"/>
+                <Picker Title="Choose" SelectedItem="{Binding SelectedWeekday}" ItemDisplayBinding="{Binding Value}" BackgroundColor="White" ItemsSource="{Binding Weekdays}" />
+                <Label Margin="0,5,0,0" Text="Start time:"  TextColor="Wheat"/>
+                <TimePicker BackgroundColor="White"  Time="{Binding StartTime}" />
+                <Label Margin="0,5,0,0" Text="End time:"  TextColor="Wheat"/>
+                <TimePicker BackgroundColor="White"  Time="{Binding EndTime}" />
+                <Button Command="{Binding OnAddNoteClickedCommand}" BackgroundColor="{StaticResource clrPrimary}" Text="Note" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand"/>
+                <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
+                    <Button Command="{Binding OnAdvancedClickedCommand}" BackgroundColor="{StaticResource clrPrimary}" Text="Advanced" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand"/>
+                    <Button Command="{Binding AddItemCommand}" BackgroundColor="{StaticResource clrAccent}" Text="Add" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand"/>
+                </StackLayout>
             </StackLayout>
-            <StackLayout BackgroundColor="{StaticResource clrBackground}" IsVisible="{Binding IsAdditionalVisible}">
+            <StackLayout BackgroundColor="{StaticResource clrBackground}" VerticalOptions="FillAndExpand" IsVisible="{Binding IsAdditionalVisible}">
                 <Label Margin="0,5,0,0" Text="Place:"  TextColor="Wheat"/>
                 <Frame Margin="0" Padding="0">
                     <Entry
                 BackgroundColor="White"
                 PlaceholderColor="Gray"
-                TextColor="White"
+                TextColor="Black"
                 Placeholder="Enter..."
                 Text="{Binding Place, Mode=TwoWay}" />
                 </Frame>
@@ -45,20 +47,22 @@
                     <Entry
                 BackgroundColor="White"
                 PlaceholderColor="Gray"
-                TextColor="White"
+                TextColor="Black"
                 Placeholder="Enter..."
                 Text="{Binding PersonName, Mode=TwoWay}" />
                 </Frame>
+                
                 <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
-                    <Button Command="{Binding BackCommand}" BackgroundColor="{StaticResource clrSecondary}" Text="Advanced" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand"/>
-                    <Button Command="{Binding AcceptAddInfoCommand}" BackgroundColor="{StaticResource clrAccent}" Text="Add" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand"/>
+                    <Button Command="{Binding BackCommand}" BackgroundColor="{StaticResource clrSecondary}" Text="Back" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand"/>
+                    <Button Command="{Binding AcceptAddInfoCommand}" BackgroundColor="{StaticResource clrAccent}" Text="Accept" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand"/>
                 </StackLayout>
             </StackLayout>
             <StackLayout BackgroundColor="{StaticResource clrBackground}" IsVisible="{Binding IsNotesVisible}">
-                <Editor Text="{Binding Note}" />
+                <Label Margin="0,5,0,0" Text="Note:"  TextColor="Wheat"/>
+                <Editor BackgroundColor="White" Placeholder="Start typing..." VerticalOptions="Fill" Text="{Binding Note}" />
                 <StackLayout Orientation="Horizontal" VerticalOptions="EndAndExpand">
-                    <Button Command="{Binding BackCommand}" BackgroundColor="{StaticResource clrSecondary}" Text="Advanced" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand"/>
-                    <Button Command="{Binding AcceptNoteCommand}" BackgroundColor="{StaticResource clrAccent}" Text="Add" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand"/>
+                    <Button Command="{Binding BackCommand}" BackgroundColor="{StaticResource clrSecondary}" Text="Back" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand"/>
+                    <Button Command="{Binding AcceptNoteCommand}" BackgroundColor="{StaticResource clrAccent}" Text="Accept" VerticalOptions="EndAndExpand" HorizontalOptions="FillAndExpand"/>
                 </StackLayout>
             </StackLayout>
         </StackLayout>

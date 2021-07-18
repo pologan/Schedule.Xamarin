@@ -11,9 +11,9 @@ namespace Schedule.Moblie
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new MainPage());
+            DependencyService.Register<IScheduleService, ScheduleService>();
 
-            DependencyService.Register<ScheduleService>();
+            MainPage = new NavigationPage(new MainPage());
         }
 
         protected override void OnStart()

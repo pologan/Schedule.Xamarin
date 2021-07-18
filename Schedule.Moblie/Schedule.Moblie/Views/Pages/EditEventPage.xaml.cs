@@ -1,4 +1,5 @@
-﻿using Schedule.Moblie.ViewModels;
+﻿using Schedule.Moblie.Models.Entities;
+using Schedule.Moblie.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,13 @@ namespace Schedule.Moblie.Views.Pages
             InitializeComponent();
 
             BindingContext = _vm = new EditEventViewModel(Navigation);
+        }
+
+        public EditEventPage(Event e)
+        {
+            InitializeComponent();
+
+            BindingContext = _vm = new EditEventViewModel(e, Navigation);
         }
 
         protected override void OnAppearing()
